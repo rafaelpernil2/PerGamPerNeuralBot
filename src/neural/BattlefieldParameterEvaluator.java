@@ -4,7 +4,9 @@ import java.util.Arrays;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.Random;
 import javax.imageio.ImageIO;
 import org.encog.engine.network.activation.ActivationSigmoid;
@@ -38,7 +40,7 @@ public class BattlefieldParameterEvaluator {
 	static double[] FinalScore1;
 	static double[] FinalScore2;
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws FileNotFoundException {
 		double[] BattlefieldSize = new double[NUMSAMPLES];
 		double[] GunCoolingRate = new double[NUMSAMPLES];
 
@@ -122,11 +124,17 @@ public class BattlefieldParameterEvaluator {
 		System.out.println("Training network...");
 		// ... TODO ...
 		final Train pergampertrain = new ResilientPropagation(pergamperneural, MyDataSet);
-
+		double[] perro = new double[NUM_TRAINING_EPOCHS];
+		PrintWriter pw = new PrintWriter(new File("error.txt"));
 		for (int Training_Times = 0; Training_Times < NUM_TRAINING_EPOCHS; Training_Times++) {
 			pergampertrain.iteration(); // Training pergampertrain
+			perro[Training_Times] = pergampertrain.getError(); //I store the error into an array.
+			
+			pw.println(perro[Training_Times]);
+			
+			System.out.println("Error of Epoch  " + Training_Times + " is :" + perro[Training_Times] );
 		}
-
+		pw.close();
 		System.out.println("Training completed.");
 		System.out.println("Testing network...");
 		// Generate test samples to build an output image
