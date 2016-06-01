@@ -23,9 +23,9 @@ import robocode.control.events.*;
 
 public class BattlefieldParameterEvaluator {
 	// Minimum allowable battlefield size is 400
-	final static int MAXBATTLEFIELDSIZE = 4000;
+	final static int MAXBATTLEFIELDSIZE = 2000;
 	// Minimum allowable gun cooling rate is 0.1
-	final static double MAXGUNCOOLINGRATE = 10;
+	final static double MAXGUNCOOLINGRATE = 0.8;
 	final static int NUMBATTLEFIELDSIZES = 601;
 	final static int NUMCOOLINGRATES = 501;
 	final static int NUMSAMPLES = 1000;
@@ -51,7 +51,7 @@ public class BattlefieldParameterEvaluator {
 		RobocodeEngine.setLogMessagesEnabled(false);
 		// Create the RobocodeEngine
 		// Run from C:/Robocode
-		RobocodeEngine engine = new RobocodeEngine(new java.io.File("/Users/EduardoP/robocode"));
+		RobocodeEngine engine = new RobocodeEngine(new java.io.File("C:/robocode"));
 		// Add our own battle listener to the RobocodeEngine
 		engine.addBattleListener(new BattleObserver());
 		// Show the Robocode battle view
@@ -68,8 +68,8 @@ public class BattlefieldParameterEvaluator {
 		for (NdxBattle = 0; NdxBattle < NUMSAMPLES; NdxBattle++) {
 
 			// Choose the battlefield size and gun cooling rate
-			BattlefieldSize[NdxBattle] = MAXBATTLEFIELDSIZE * (0.1 + 0.9 * rng.nextDouble());
-			GunCoolingRate[NdxBattle] = MAXGUNCOOLINGRATE * (0.1 + 0.9 * rng.nextDouble());
+			BattlefieldSize[NdxBattle] = MAXBATTLEFIELDSIZE * (0.4 + 0.6 * rng.nextDouble());
+			GunCoolingRate[NdxBattle] = MAXGUNCOOLINGRATE * (0.5 + 0.5 * rng.nextDouble());
 
 			// Create the battlefield
 			BattlefieldSpecification battlefield = new BattlefieldSpecification((int) BattlefieldSize[NdxBattle],
@@ -96,13 +96,24 @@ public class BattlefieldParameterEvaluator {
 		// Create the training dataset for the neural network
 		double[][] RawInputs = new double[NUMSAMPLES][NUM_NN_INPUTS];
 		double[][] RawOutputs = new double[NUMSAMPLES][1];
+		PrintWriter pwin1 = new PrintWriter(new File("INPUT1.txt"));
+		PrintWriter pwin2 = new PrintWriter(new File("INPUT2.txt"));
+		PrintWriter pwout = new PrintWriter(new File("OUTPUT.txt"));
 		for (int NdxSample = 0; NdxSample < NUMSAMPLES; NdxSample++) {
 			// IMPORTANT: normalize the inputs and the outputs to
 			// the interval [0,1]
 			RawInputs[NdxSample][0] = BattlefieldSize[NdxSample] / MAXBATTLEFIELDSIZE;
+			pwin1.println(BattlefieldSize[NdxSample] / MAXBATTLEFIELDSIZE);
 			RawInputs[NdxSample][1] = GunCoolingRate[NdxSample] / MAXGUNCOOLINGRATE;
+			pwin2.println(GunCoolingRate[NdxSample] / MAXGUNCOOLINGRATE);
 			RawOutputs[NdxSample][0] = FinalScore1[NdxSample] / 250;
+			pwout.println(FinalScore1[NdxSample] / 250);
 		}
+		pwin1.close();
+		pwin2.close();
+		pwout.close();
+		
+		
 		BasicNeuralDataSet MyDataSet = new BasicNeuralDataSet(RawInputs, RawOutputs);
 		// Create and train the neural network
 		// ... TODO ...
