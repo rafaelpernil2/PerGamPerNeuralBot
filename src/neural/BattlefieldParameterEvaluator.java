@@ -23,9 +23,9 @@ import robocode.control.events.*;
 
 public class BattlefieldParameterEvaluator {
 	// Minimum allowable battlefield size is 400
-	final static int MAXBATTLEFIELDSIZE = 2000;
+	final static int MAXBATTLEFIELDSIZE = 4000;
 	// Minimum allowable gun cooling rate is 0.1
-	final static double MAXGUNCOOLINGRATE = 0.8;
+	final static double MAXGUNCOOLINGRATE = 1;
 	final static int NUMBATTLEFIELDSIZES = 601;
 	final static int NUMCOOLINGRATES = 501;
 	final static int NUMSAMPLES = 1000;
@@ -68,8 +68,8 @@ public class BattlefieldParameterEvaluator {
 		for (NdxBattle = 0; NdxBattle < NUMSAMPLES; NdxBattle++) {
 
 			// Choose the battlefield size and gun cooling rate
-			BattlefieldSize[NdxBattle] = MAXBATTLEFIELDSIZE * (0.4 + 0.6 * rng.nextDouble());
-			GunCoolingRate[NdxBattle] = MAXGUNCOOLINGRATE * (0.5 + 0.5 * rng.nextDouble());
+			BattlefieldSize[NdxBattle] = MAXBATTLEFIELDSIZE * (0.1 + 0.9 * rng.nextDouble());
+			GunCoolingRate[NdxBattle] = MAXGUNCOOLINGRATE * (0.1 + 0.9 * rng.nextDouble());
 
 			// Create the battlefield
 			BattlefieldSpecification battlefield = new BattlefieldSpecification((int) BattlefieldSize[NdxBattle],
